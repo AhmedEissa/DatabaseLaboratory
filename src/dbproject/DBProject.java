@@ -15,6 +15,7 @@ public class DBProject {
     private final String idTable = "ID";
     private final String nameTable = "NAME";
     private final String surnameTable = "SURNAME";
+    Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) throws SQLException {
         DBProject db = new DBProject();
@@ -31,12 +32,11 @@ public class DBProject {
         
     }
     public void writeToDB()throws SQLException{
-        Scanner in = new Scanner(System.in);
         System.out.println("Please provide unique ID for the user");
         int id = in.nextInt();
-        System.out.println("Please type in your first name");
+        System.out.println("Please type in first name");
         String firstName = in.next();
-        System.out.println("Please type in your surname");
+        System.out.println("Please type in surname");
         String surName = in.next();
         try (Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE)) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM EXAMPLE");
@@ -51,10 +51,22 @@ public class DBProject {
         try (Statement stmt = con.createStatement()) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM EXAMPLE");
             while (rs.next()) {
-                int x = rs.getInt("ID");
-                String s = rs.getString("NAME");
-                String f = rs.getString("SURNAME");
+                int x = rs.getInt(idTable);
+                String s = rs.getString(nameTable);
+                String f = rs.getString(surnameTable);
                 System.out.println(x +" "+ s +" "+f);
+            }
+        }
+    }
+    public void removeEntryFromDB() throws SQLException{
+        System.out.println("Select user ID that should be removed.");
+        int id = in.nextInt();
+        try (Statement stmt = con.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM EXAMPLE");
+            while(rs.next()){
+                if(rs.getInt("ID")==id){
+                    rs.deleteRow();
+                }
             }
         }
     }
