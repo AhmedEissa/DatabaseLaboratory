@@ -20,8 +20,32 @@ public class DBProject {
     public static void main(String[] args) throws SQLException {
         DBProject db = new DBProject();
         db.connectToDB();
-        db.writeToDB();
-        db.readFromDB();
+        int input = 0;
+        while(input!=4){
+            System.out.println("To add new user to Database click on 1"
+                + "To read all the users from database click on 2"
+                + "To remove selected user from database click on 3"
+                + "To exit the program click on 4");
+            input=db.in.nextInt();
+            switch(input){
+                case 1:
+                    db.writeToDB();
+                    break;
+                case 2:
+                    db.readFromDB();
+                    break;
+                case 3:
+                    db.removeEntryFromDB();
+                    break;
+                    default:
+                        System.out.println("Unknown input please try again");
+                        break;
+            }
+        }
+        
+        
+        
+        
     }
 
     public void connectToDB() throws SQLException {
@@ -61,7 +85,7 @@ public class DBProject {
     public void removeEntryFromDB() throws SQLException{
         System.out.println("Select user ID that should be removed.");
         int id = in.nextInt();
-        try (Statement stmt = con.createStatement()) {
+        try (Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE)) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM EXAMPLE");
             while(rs.next()){
                 if(rs.getInt("ID")==id){
